@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <assert.h>
 
+#include <initguid.h>
+#include <unknwn.h>
+
 #include <windows.h>
 #include <roapi.h>
 #include <winstring.h>
@@ -13,13 +16,13 @@
 #include "arraylist.h"
 #include "winrt_gamepad.h"
 
-const GUID IID___FIEventHandler_1_Windows__CGaming__CInput__CGamepad = {
+const GUID IID_FIEventHandler_Windows_Gaming_Input_Gamepad = {
     0x8a7639ee,
     0x624a,
     0x501a,
     {0xbb, 0x53, 0x56, 0x2d, 0x1e, 0xc1, 0x1b, 0x52}};
 
-const GUID IID___x_ABI_CWindows_CGaming_CInput_CIGamepadStatics = {
+const GUID IID_ABI_Windows_Gaming_Input_IGamepadStatics = {
     0x8bbce529,
     0xd49c,
     0x39e9,
@@ -46,8 +49,7 @@ HRESULT STDMETHODCALLTYPE FIEventHandler_Gamepad_QueryInterface(
         return E_INVALIDARG;
     *ppvObject = NULL;
     if (IsEqualIID(riid, &IID_IUnknown) ||
-        IsEqualIID(
-            riid, &IID___FIEventHandler_1_Windows__CGaming__CInput__CGamepad)) {
+        IsEqualIID(riid, &IID_FIEventHandler_Windows_Gaming_Input_Gamepad)) {
         *ppvObject = (LPVOID)this;
         this->lpVtbl->AddRef(this);
         return S_OK;
@@ -101,7 +103,6 @@ handler_func_gamepad_added(IInspectable *sender,
                                           .pad = gamepad};
         next_gamepad_id++;
         int i = ArrayList_Add(gamepadList, &new_gamepad);
-        printf("Gamepad added: %d %p\n", new_gamepad.id, new_gamepad.pad);
 
         GamingInputGamepad *added_gamepad;
         ArrayList_GetRef(gamepadList, i, (void **)&added_gamepad);
@@ -123,8 +124,6 @@ handler_func_gamepad_removed(
     if (index > -1) {
         GamingInputGamepad *removed_gamepad;
         ArrayList_GetRef(gamepadList, index, (void **)&removed_gamepad);
-        printf("Gamepad removed: %d %p\n", removed_gamepad->id,
-               removed_gamepad->pad);
         OnGamepadRemoved(removed_gamepad);
 
         ArrayList_Del(gamepadList, index);
@@ -147,8 +146,7 @@ void InitializeGamingInput() {
         assert(SUCCEEDED(hr));
 
         hr = RoGetActivationFactory(
-            className_hstr,
-            &IID___x_ABI_CWindows_CGaming_CInput_CIGamepadStatics,
+            className_hstr, &IID_ABI_Windows_Gaming_Input_IGamepadStatics,
             (void **)&gamepadStatics);
         assert(SUCCEEDED(hr));
     }
