@@ -38,6 +38,8 @@ typedef enum GamingInputGamepadButtons {
     GamepadButton_Paddle2 = 0x8000,
     GamepadButton_Paddle3 = 0x10000,
     GamepadButton_Paddle4 = 0x20000,
+
+    // Undocumented, tested with real hardware
     GamepadButton_Guide = 0x40000000
 } GamingInputGamepadButtons;
 
